@@ -30,10 +30,6 @@ before_script:
 script:
   - (cd ./firmware && make clean all)
 
-before_deploy:
-  - sed -e s%@TIMESTAMP@%"`ruby -e 'require "time"; print Time::parse(\`git log --format="%cd" -n 1\`.chomp).strftime("%Y%m%d_%H%M%S")'`"% .travis.bintray.json.in > .travis.bintray.json
-  - cat .travis.bintray.json
-
 deploy:
   - provider: releases
     api_key:
