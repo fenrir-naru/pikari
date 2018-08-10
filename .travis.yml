@@ -1,0 +1,47 @@
+sudo: false
+language: c
+
+addons:
+  apt:
+    packages:
+      - libboost-all-dev
+      #- sdcc
+      - build-essential
+    
+env:
+  global:
+    - SDCC=3.3.0
+    - SDCC_DIR=/tmp/sdcc-$SDCC
+
+cache:
+  directories:
+    - $SDCC_DIR
+
+before_install:
+  - export PATH=$PATH:$SDCC_DIR/bin
+  - chmod +x ./scripts/build-sdcc.sh
+
+install:
+  - ./scripts/build-sdcc.sh
+
+before_script:
+  - sdcc --version
+
+script:
+  - (cd ./firmware && make clean all)
+
+before_deploy:
+  - sed -e s%@TIMESTAMP@%"`ruby -e 'require "time"; print Time::parse(\`git log --format="%cd" -n 1\`.chomp).strftime("%Y%m%d_%H%M%S")'`"% .travis.bintray.json.in > .travis.bintray.json
+  - cat .travis.bintray.json
+
+deploy:
+  - provider: releases
+    api_key:
+      secure: $GITHUB_TOKEN
+    file: 
+      - ./firmware/build_by_sdcc/pikari.hex
+      - ./firmware/build_by_sdcc/pikari.omf
+    skip_cleanup: true
+    all_branches: true  # https://github.com/travis-ci/travis-ci/issues/1675
+    on:
+      tags: true

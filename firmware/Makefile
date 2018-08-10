@@ -26,7 +26,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 # EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-PACKAGE = touch_switcht.hex
+PACKAGE = pikari.hex
 
 BIN_PATH = /usr/bin:/usr/local/bin
 CXX = sdcc
